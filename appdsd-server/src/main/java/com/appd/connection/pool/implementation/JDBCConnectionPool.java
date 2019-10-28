@@ -15,7 +15,7 @@ public class JDBCConnectionPool implements InterfaceJDBCConnectionPool{
     private Vector<Connection> connections;
     private static final Logger log = LoggerFactory.getLogger(JDBCConnectionPool.class);
     private final String URL             =  Util.getPropertyValueFromApplicationProperties("url_prod");
-    private final String USER            =  Util.getPropertyValueFromApplicationProperties("first_name");
+    private final String USER            =  Util.getPropertyValueFromApplicationProperties("username");
     private final String PASSWORD =  Util.getPropertyValueFromApplicationProperties("password");
     private int numberOfConnections;
     private int numberOfConnectionsCreated;
@@ -24,7 +24,7 @@ public class JDBCConnectionPool implements InterfaceJDBCConnectionPool{
     public JDBCConnectionPool() {
         connections = new Vector<Connection>();
         numberOfConnectionsCreated = 0;
-        log.info("Database URL :\n" + URL);
+        System.out.println("Database URL :\n" + URL);
         //Mieux pour démontrer la saturation du pool !
         numberOfConnections = 3;
 
