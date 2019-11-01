@@ -11,9 +11,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
-CRUD pour capteur (DAO pour persistence des couches)
- */
+
 public class SensorDao extends DAO<Sensor> {
     private static final Logger log;
 
@@ -22,8 +20,7 @@ public class SensorDao extends DAO<Sensor> {
     }
 
     //super constructor
-    public SensorDao(Connection connection)
-    {
+    public SensorDao(Connection connection) {
         super(connection, "SENSOR");
     }
 
@@ -32,9 +29,6 @@ public class SensorDao extends DAO<Sensor> {
         return null;
     }
 
-    /*
-    Méthode pour modifier un capteur : va être utile pour modifier un capteur et, ainsi, lui affecter ou enlever une localisation
-     */
     @Override
     public void update(Sensor sensor) {
         synchronized (lock) {
@@ -64,15 +58,11 @@ public class SensorDao extends DAO<Sensor> {
         return null;
     }
 
-    /*
-    Méthode pour renvoyer une liste de capteurs en fonction de l'id de leur localisation
-     */
-    public List<Sensor> getSensorsByLocation(int locationId){
+    public List<Sensor> getSensorsByLocation(int locationId) {
 
-       //la liste de sensors que l'on va renvoyer
+
         List<Sensor> sensors = new ArrayList<Sensor>();
 
-        // On vérifie d'abord la connection
         if (connection != null) {
             try {
                 PreparedStatement preparedStatement = connection.prepareStatement(

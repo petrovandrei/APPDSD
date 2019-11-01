@@ -25,7 +25,6 @@ public class JDBCConnectionPool implements InterfaceJDBCConnectionPool{
         connections = new Vector<Connection>();
         numberOfConnectionsCreated = 0;
         System.out.println("Database URL :\n" + URL);
-        //Mieux pour démontrer la saturation du pool !
         numberOfConnections = 3;
 
         log.info(numberOfConnections + " connection(s) should be put inside the connection pool.");
@@ -113,17 +112,10 @@ public class JDBCConnectionPool implements InterfaceJDBCConnectionPool{
         return connection;
     }
 
-    /*
-    Connections restantes
-     */
     public synchronized int getRemaningNumberOfConnections(){
         return connections.size();
     }
 
-
-    /*
-    Combien de connections il reste --> l'afficher
-     */
     private void displayConnectionPoolState()
     {
         String state = "Connection(s) in the pool : " + getRemaningNumberOfConnections() + "/" + numberOfConnectionsCreated;

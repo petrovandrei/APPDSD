@@ -16,7 +16,6 @@ public class Main {
             @SuppressWarnings("unused")
             public void run() {
                 log.info("Lancement de APPD");
-                //Lancer l'IHM de départ
                 IHM appd = new IHM();
 
 

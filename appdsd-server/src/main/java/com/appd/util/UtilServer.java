@@ -18,11 +18,9 @@ public class UtilServer {
     private static final String APPLICATION_VERSION = Util.getPropertyValueFromApplicationProperties("version");
     private static final Long dataPoolLoopSleep = NumberUtils.toLong(Util.getPropertyValueFromApplicationProperties("data_pool_loop_sleep"));
 
-    //Récupére l'ascii
-    //pour titre app par exmeple
+
     public static String getASCII(String name)
     {
-        //initialisé à vide
         String ascii = "";
 
         try
@@ -30,9 +28,7 @@ public class UtilServer {
             InputStream inputStream = UtilServer.class.getClassLoader().getResourceAsStream("ascii/" + name);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
 
-            /*
-            *Seules les 1ères lignse contiennes des noms
-             */
+
             String line = null;
             while((line = bufferedReader.readLine()) != null)
             {
@@ -48,7 +44,7 @@ public class UtilServer {
         return ascii;
     }
 
-    //Getters & setters
+
     /**
      * @return the applicationVersion
      */

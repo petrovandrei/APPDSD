@@ -7,9 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
-/*
-CRUD pour localisation (DAO pour persistence des couches)
- */
+
 public class LocationDao extends DAO<Location> {
 
     private static final Logger log;
@@ -18,19 +16,15 @@ public class LocationDao extends DAO<Location> {
         log = LoggerFactory.getLogger(LocationDao.class);
     }
 
-    //super constructor
-    public LocationDao(Connection connection)
-    {
+
+    public LocationDao(Connection connection) {
         super(connection, "LOCATION");
     }
 
-    /*
-    Créer une localisation : pas nécessairement utile si on part du principe que la map est fixe
-     */
+
     @Override
     public Location create(Location location) {
         synchronized (lock) {
-            // Vérifier que la connection est disponible (différente de null) avant de commencer
             if (connection != null) {
                 try {
                     PreparedStatement preparedStatement = connection
@@ -59,11 +53,6 @@ public class LocationDao extends DAO<Location> {
         }
     }
 
-    /*
-    Méthode pour modifier une localisation, à voir si j'ai le temps mais pas obligatoire dans le usecase
-    Je pars du principe qu'on ne peut modifier que le nom et l'étage
-    TODO : ajouter un bouton pour modifier une localisation
-     */
     @Override
     public void update(Location location) {
         synchronized (lock) {
@@ -85,13 +74,9 @@ public class LocationDao extends DAO<Location> {
         }
     }
 
-    /*
-    Pour supprimer une localisation : pas nécessairement utile si on part du principe que la map est fixe
-     */
     @Override
     public void delete(Location location) {
         synchronized (lock) {
-            // Pareil on vérifie toujours que la connection est différente de null avant de commencer
             if (connection != null) {
                 try {
                     PreparedStatement preparedStatement = null;
@@ -114,8 +99,7 @@ public class LocationDao extends DAO<Location> {
 
         } catch (SQLException e) {
             log.error("Une erreur est survenue lors de la sélection d'une localisation en base : " + e.getMessage());
-        }
-        finally {
+        } finally {
             return location;
         }
     }
