@@ -18,24 +18,11 @@ public class JsonUtil {
 
     private static final Logger log = LoggerFactory.getLogger(JsonUtil.class);
 
-    /**
-     * Convertir un objet JAVA en object JSON au format texte (String)
-     *
-     * @param object :
-     * 			L'objet à convertir en JSON, une simple entité ou une liste d'entités
-     * @param objectClass :
-     * 			La classe de l'objet à sérialiser. Important de l'avoir dans le cas où l'objet est à null.
-     * @return
-     * 			La chaîne de caractère en JSON qui représente l'objet
-     * 		//TODO : rechercher sur cette exception
-     * @throws InvalidAttributeValueException
-     */
     @SuppressWarnings("rawtypes")
-    public static String serializeObjectToJSON(Object object, Class objectClass, String message)
+    public static String serializeObject(Object object, Class objectClass, String message)
     {
         String objectToJSON = null;
 
-        //pour JSSON
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode objectNode = objectMapper.createObjectNode();
         message = (message == null) ? " " : message;
@@ -45,26 +32,20 @@ public class JsonUtil {
 
             if(object != null && objectClass != null)
             {
-                /*
-                 * L'objet peut être une liste si on utilise findAllSensors
-                 * instanceof permet de connaître le type
-                 */
+
                 if(object instanceof List)
                 {
-                    //on passe à true
+
                     objectNode.put(JSONFieldsRequest.IS_LIST_OF_SENSORS.getLabel(), true);
                 }
                 else
                 {
-                    //on passe à false
+
                     objectNode.put(JSONFieldsRequest.IS_LIST_OF_SENSORS.getLabel(), false);
                 }
 
                 String className = objectClass.getName();
-                /*
-                 * On stock le nom de l'entité pour rendre la désérialisation plus simple ensuite
-                 *Il n'y a q'une seule méthode de désérialisation pour toutes les entités
-                 */
+
                 objectNode.put(JSONFieldsRequest.ENTITY.getLabel(), className);
                 objectNode.putPOJO(JSONFieldsRequest.DATA.getLabel(), object);
             }
@@ -90,7 +71,7 @@ public class JsonUtil {
      * @return
      * 			L'objet java qui est converti depuis la chaîne JSON
      */
-    public static Object deserializeJsonObjectToJavaObjet(String objectInJSONString) {
+    public static Object deserializeObject(String objectInJSONString) {
 
         Object resultObject = null;
         ObjectMapper objectMapper = new ObjectMapper();
@@ -100,27 +81,27 @@ public class JsonUtil {
             if(objectInJSONString == null || objectInJSONString.trim().length() == 0)
                 throw new Exception("La chaîne à désérialiser est à null. ");
 
-            // Du String au JSON Node
+
             //TODO : readTree ?
             JsonNode objectJStringNode = objectMapper.readTree(objectInJSONString);
-            // On lui passe le nom de l'entité
+
             JsonNode entityNode = objectJStringNode.get(JSONFieldsRequest.ENTITY.getLabel());
-            //On lui passe les données (l'objet)
+
             JsonNode datasNode = objectJStringNode.get(JSONFieldsRequest.DATA.getLabel());
-            // On vérifie s'il s'agit d'une liste uo non
+
             JsonNode SensorsList = objectJStringNode.get(JSONFieldsRequest.IS_LIST_OF_SENSORS.getLabel());
 
-            // On récupère le nom de la classe
+
             String className = entityNode.textValue();
 
-            //On récupère la classe de l'entité une fois qu'on a son nom
+
             Class<?> objectClass = Class.forName(className);
 
-            //On stock le boolean de sorte à savoir s'il s'agit d'une liste ou non
+
             boolean isListOfSensors = SensorsList.booleanValue();
 
             if(isListOfSensors)
-                //si c'est une liste on construit la liste
+
                 resultObject = objectMapper.readValue(datasNode.toString(), objectMapper.getTypeFactory().constructCollectionType(List.class, objectClass));
             else
                 resultObject = objectMapper.readValue(datasNode.toString(), objectClass);
@@ -186,14 +167,14 @@ public class JsonUtil {
                 //TODO : est-ce vraiment utile de le garder dans le cadre de mon UC ?
                 requestNode.putPOJO(JSONFieldsRequest.REQUIRED_TESTS.getLabel(), requiredTests);
 
-                //Les infos de la requête + L'objet sérialisé
+
                 objectNode.putPOJO(JSONFieldsRequest.REQUEST_INFO.getLabel(), requestNode);
                 objectNode.putPOJO(JSONFieldsRequest.SERIALIZED_OBJECT.getLabel(), serializedObjectNode);
 
-            //Transformation
+
             requestSender = (requestSender == null) ? RequestSender.CLIENT : requestSender;
             objectNode.putPOJO(JSONFieldsRequest.REQUEST_SENDER.getLabel(), requestSender);
-            //Transformation de de l'objet en String JSON
+
             javaobjectToJSONobj = objectMapper.writeValueAsString(objectNode);
         } catch (IOException e) {
             log.error("Cette erreur est survenue lors de la sérialisation de la requête :\n" + e.getMessage());
@@ -203,7 +184,7 @@ public class JsonUtil {
     }
 
     @SuppressWarnings("finally")
-    //Récupére la valeur du noeud
+
     public static String getNodeValueOfJson(JSONFieldsRequest field, String json)
     {
         String result = "";

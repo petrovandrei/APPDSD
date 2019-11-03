@@ -1,5 +1,6 @@
 package com.appd.entity;
 
+import com.appd.enumeration.UserProfile;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -18,12 +19,7 @@ public class Person {
     private String password;
 
 
-    public Person() {
-
-    }
-
-    public Person(int idPerson, String lastName, String firstName, String password, String role
-                  ) {
+    public Person(int idPerson, String lastName, String firstName, String password, String role) {
         this.idPerson = idPerson;
         this.lastName = lastName;
         this.firstName = firstName;

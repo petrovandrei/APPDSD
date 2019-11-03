@@ -9,20 +9,8 @@ import java.util.Properties;
 
 public class Util {
 
-    /*
-    Mettre les méthodes statiques dont j'ai besoin dans tout le projet
-     */
-
     private static final Logger log = LoggerFactory.getLogger(Util.class);
 
-    /**
-     * retourne la valeur de ce qui est passé en paramètres dans le fichier properties
-     *
-     * @param propertyName :
-     * 		Nom de la prop dans le fichier properties
-     * @return
-     * 		valeur de la prop
-     */
     private static String getPropertyValueFromApplicationProperties(String propertyName, String fileName)
     {
         String propertyValue = null;
@@ -36,7 +24,7 @@ public class Util {
         }
         catch (Exception e)
         {
-            log.error("Erreur lors de l'appel de la property " + propertyName, e);
+            log.error("Error requesting property :  " + propertyName, e);
         }
         return propertyValue;
     }
@@ -45,7 +33,6 @@ public class Util {
         return getPropertyValueFromApplicationProperties(propertyName, "application.properties");
     }
 
-    //Méthode pour récupérer la version du client (ou du server) dans le fichier properties
     public static String getVersionSplitter() {
         return getPropertyValueFromApplicationProperties("version_split");
     }

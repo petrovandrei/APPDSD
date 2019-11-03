@@ -3,7 +3,7 @@ package com.appd.socket;
 import com.appd.enumeration.ConnectionStates;
 import com.appd.exception.BadVersionException;
 import com.appd.util.Util;
-import com.appd.util.UtilGui;
+import com.appd.util.GuiUtil;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class ClientSocket {
             readFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream(), encodageType));
             writeToServer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), encodageType), true);
             ipAddress = InetAddress.getLocalHost();
-            writeToServer.println(ipAddress + versionSplitter + UtilGui.getApplicationVersion());
+            writeToServer.println(ipAddress + versionSplitter + GuiUtil.getApplicationVersion());
 
             String[] serverCheck = readFromServer.readLine().split(versionSplitter);
             if(serverCheck.length >= 2)
@@ -61,7 +61,7 @@ public class ClientSocket {
                 String serverVersion = serverCheck[1];
                 if(code.equalsIgnoreCase(ConnectionStates.DEPRECATED_VERSION.getCode().toString()))
                 {
-                    UtilGui.setServerVersion(serverVersion);
+                    GuiUtil.setServerVersion(serverVersion);
                     throw new BadVersionException(serverVersion);
                 }
 

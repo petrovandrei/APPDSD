@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.appd.entity.Person;
 
 
 public class RequestHandler implements Runnable {
@@ -137,11 +138,9 @@ public class RequestHandler implements Runnable {
 
             RequestTypes requestTypes = RequestTypes.getRequestTypeValue(requestNode.get(JSONFieldsRequest.REQUEST_TYPE_CRUD.getLabel()).textValue());
 
-            //dans service
-            //TODO : ajouter la classe
             Object objectResult = DAOFactory.execute(connection, entityClass, requestTypes, deserializedObject, fields, requiredValues, tests);
 
-            result = JsonUtil.serializeObjectToJSON(objectResult, entityClass, "");
+            result = JsonUtil.serializeObject(objectResult, entityClass, "");
 
 
         } catch (Exception e) {
@@ -156,17 +155,14 @@ public class RequestHandler implements Runnable {
     private Object getObjectFromJson(JsonNode json) {
         JsonNode serializedObjectNode = json.get(JSONFieldsRequest.SERIALIZED_OBJECT.getLabel());
         if (!serializedObjectNode.isNull())
-            return JsonUtil.deserializeJsonObjectToJavaObjet(serializedObjectNode.toString());
+            return JsonUtil.deserializeObject(serializedObjectNode.toString());
         return null;
     }
 
     private void exit() {
         try {
-            //On rend la connexion au pool
             DataSource.putConnection(connection);
-            //on met la connexion à null
             this.connection = null;
-            //on le ferme le reste
             socket.close();
             readFromClient.close();
             writeToClient.close();

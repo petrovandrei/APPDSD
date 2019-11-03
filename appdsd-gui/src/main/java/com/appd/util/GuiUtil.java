@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.io.IOException;
 
-public class UtilGui {
+public class GuiUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(UtilGui.class);
+    private static final Logger log = LoggerFactory.getLogger(GuiUtil.class);
 
     private static final String APPLICATION_VERSION = Util.getPropertyValueFromApplicationProperties("version");
     private static String serverVersion = "";
@@ -24,7 +24,7 @@ public class UtilGui {
     }
 
 
-    public static String executeRequest(String jsonRequest) throws NoConnectionException, IOException, BadVersionException
+    public static String sendRequest(String jsonRequest) throws NoConnectionException, IOException, BadVersionException
     {
         String response = "";
         ClientSocket clientSocket = new ClientSocket();
@@ -76,6 +76,6 @@ public class UtilGui {
 
 
     public static void setServerVersion(String serverVersion) {
-        UtilGui.serverVersion = serverVersion;
+        GuiUtil.serverVersion = serverVersion;
     }
 }
