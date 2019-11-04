@@ -2,14 +2,20 @@ package com.appd.enumeration;
 
 public enum RequestSender {
 
-    CLIENT;
+    CLIENT,
 
-    public static RequestSender getClientSender(String sender) {
-        RequestSender[] value = RequestSender.values();
+    CLIENT_FOR_SENSOR_STATE,
 
-        for(RequestSender val : value) {
-            if(val.toString().equalsIgnoreCase(sender))
-                return val;
+    CLIENT_FOR_ACTIVE_SENSOR,
+
+    SENSOR;
+
+    public static RequestSender getValueOf(String sender) {
+        RequestSender[] values = RequestSender.values();
+
+        for(RequestSender value : values) {
+            if(value.toString().equalsIgnoreCase(sender))
+                return value;
         }
 
         return null;

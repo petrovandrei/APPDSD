@@ -9,6 +9,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import com.appd.entity.Person;
 import com.appd.enumeration.RequestTypes;
 import com.appd.exception.BadVersionException;
 import com.appd.exception.NoConnectionException;
@@ -17,12 +18,10 @@ import com.appd.util.GuiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.appd.entity.Person;
 import com.appd.enumeration.RequestSender;
 import com.appd.enumeration.UserProfile;
 
 import com.appd.util.JsonUtil;
-import com.appd.util.Util;
 
 
 public class PersonListener implements ActionListener {
@@ -57,11 +56,11 @@ public class PersonListener implements ActionListener {
         // 			+ " et ne doit pas commencer par 0 " + password, "Champ(s) invalide(s)", JOptionPane.ERROR_MESSAGE);
         // }
         else {
-            Person newPerson = new Person(0, lastName, firstName, "resident", password);
+            Person newPerson = new Person(0, lastName, firstName, UserProfile.RESIDENT, password);
             log.info(newPerson.toString());
 
             String serializedObject = JsonUtil.serializeObject(newPerson, Person.class, "");
-            String jsonRequest = JsonUtil.serializeRequestConstruct(RequestTypes.SELECT.INSERT, Person.class, serializedObject, null, null, null, RequestSender.CLIENT);
+            String jsonRequest = JsonUtil.serializeRequest(RequestTypes.INSERT, Person.class, serializedObject, null, null, null, RequestSender.CLIENT);
             String response = null;
             try {
                 response = GuiUtil.sendRequest(jsonRequest);
@@ -72,8 +71,8 @@ public class PersonListener implements ActionListener {
             } catch (BadVersionException ex) {
                 ex.printStackTrace();
             }
-            /*newPerson = (Person) JsonUtil.deserializeObject(response);
-            JOptionPane.showMessageDialog(personsTab, "Nouvelle personne cr��e avec l'id n�" + newPerson.getIdPerson(), "Succes", JOptionPane.INFORMATION_MESSAGE);*/
+            newPerson = (Person) JsonUtil.deserializeObject(response);
+            JOptionPane.showMessageDialog(personsTab, "Nouvelle personne cr��e avec l'id n�" + newPerson.getIdPerson(), "Succes", JOptionPane.INFORMATION_MESSAGE);
 
         }
         }

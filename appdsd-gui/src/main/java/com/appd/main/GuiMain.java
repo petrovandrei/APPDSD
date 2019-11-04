@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 
-public class Main {
+public class GuiMain {
 
-    private static  final Logger log = LoggerFactory.getLogger(Main.class);
+    private static  final Logger log = LoggerFactory.getLogger(GuiMain.class);
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {

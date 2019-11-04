@@ -111,6 +111,7 @@ public class ClientSocket {
                 writeToServer.close();
             if(socket != null)
             {
+
                 socket.close();
                 log.debug("La communication avec le server a été coupée avec succès. ");
             }

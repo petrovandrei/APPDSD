@@ -46,7 +46,7 @@ public class GuiUtil {
 
             if(!jsonRequest.trim().equals(ConnectionStates.RESERVED.getCode().toString()))
             {
-                String error = JsonUtil.getNodeValueOfJson(JSONFieldsRequest.ERROR_MESSAGE, response).trim();
+                String error = JsonUtil.getJsonNodeValue(JSONField.ERROR_MESSAGE, response).trim();
 
                 if(!error.equals(""))
                 {

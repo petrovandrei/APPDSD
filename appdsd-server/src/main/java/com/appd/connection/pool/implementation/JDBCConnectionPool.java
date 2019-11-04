@@ -74,9 +74,9 @@ public class JDBCConnectionPool implements InterfaceJDBCConnectionPool{
         if(connection != null)
         {
             connections.addElement(connection);
-            //log.info("A connection is being added to the connection pool.");
+            log.info("A connection is being added to the connection pool.");
         }
-        //displayConnectionPoolState();
+        displayConnectionPoolState();
 
     }
 
