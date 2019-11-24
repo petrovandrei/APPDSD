@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 
+import java.sql.Timestamp;
 import java.util.Properties;
 
 public class Util {
@@ -31,6 +32,10 @@ public class Util {
 
     public static String getPropertyValueFromApplicationProperties(String propertyName) {
         return getPropertyValueFromApplicationProperties(propertyName, "application.properties");
+    }
+
+    public static Timestamp getCurrentTimestamp() {
+        return new Timestamp(System.currentTimeMillis());
     }
 
     public static String getVersionSplitter() {

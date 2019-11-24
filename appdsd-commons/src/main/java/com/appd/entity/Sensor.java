@@ -1,5 +1,6 @@
 package com.appd.entity;
 
+import com.appd.enumeration.SensorType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -19,7 +20,7 @@ public class Sensor {
     @JsonProperty("id_location")
     private Integer locationId;
 
-    public Sensor() {
+    public Sensor(Integer sensorId, SensorType sensorType, String macAddress, String serialNumber, Float hardwareVersion, Float softwareVersion) {
     }
 
     public Sensor(Integer sensorId, String type, String name, Boolean configured, Integer locationId) {
@@ -28,6 +29,9 @@ public class Sensor {
         this.name = name;
         this.configured = configured;
         this.locationId = locationId;
+    }
+
+    public Sensor() {
     }
 
     @Override

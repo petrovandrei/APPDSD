@@ -97,4 +97,7 @@ public class SensorSignal implements Runnable {
             log.error(e.getMessage());
         }
     }
+
+    public void clone(SensorSignal newSignal) {
+    }
 }
