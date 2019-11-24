@@ -43,4 +43,8 @@ public class Util {
     }
 
 
+    public static Timestamp getCurrentTimeUTC() {
+        return new Timestamp(System.currentTimeMillis());
+
+    }
 }

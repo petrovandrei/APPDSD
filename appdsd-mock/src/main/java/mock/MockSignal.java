@@ -155,7 +155,6 @@ public class MockSignal {
             ConnectionStates connectionState = clientSocket.start();
             if(connectionState == ConnectionStates.SUCCESS) {
                 String serializedObject = JsonUtil.serializeObject(message, message.getClass(), "");
-                //In this case we do not care about the request type because the RequestHandler will see that it comes from a sensor
                 String jsonRequest = JsonUtil.serializeRequest(RequestTypes.INSERT, message.getClass(), serializedObject, null, null,null, RequestSender.SENSOR);
                 clientSocket.sendRequestToServer(jsonRequest);
                 return true;
