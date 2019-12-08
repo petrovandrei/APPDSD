@@ -24,13 +24,18 @@ public class Persons extends JPanel {
     private PersonListener listener;
 
     private JButton createButton;
+    private JButton showButton;
+
     public Persons() {
         this.setLayout(new BorderLayout());
         JPanel northPanelForCreate = new JPanel();
+
         northPanelForCreate.setLayout(new FlowLayout());
         listener = new PersonListener(this);
         textArea = new JTextArea();
         createButton = new JButton("Créer");
+
+
         createButton.addActionListener(listener);
         newFirstNameTextField = new JTextField(15);
         newLastNameTextField = new JTextField(15);
@@ -43,24 +48,20 @@ public class Persons extends JPanel {
         northPanelForCreate.add(newPasswordField);
         northPanelForCreate.add(createButton);
         this.add(northPanelForCreate,BorderLayout.NORTH);
+
+
+        // select dans la base
+
+        showButton = new JButton("Afficher");
+        JPanel showPanel = new JPanel();
+        showPanel.setLayout(new FlowLayout());
+        showButton.addActionListener(listener);
+        showPanel.add(showButton);
+        showPanel.add(textArea);
+        this.add(showPanel,BorderLayout.CENTER );
     }
-    /*private void setCreateMenu()
-    {
-        JPanel northPanelForCreate = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        createButton = new JButton("Créer");
-        createButton.addActionListener(listener);
-        JLabel newNameLabel = new JLabel("Nouveau nom : ");
-        newFirstNameTextField = new JTextField(15);
-        newLastNameTextField = new JTextField(15);
-        newPasswordField = new JPasswordField(15);
-        northPanelForCreate.add(newNameLabel);
-        northPanelForCreate.add(newFirstNameTextField);
-        northPanelForCreate.add(new JLabel("Nouveau prénom : "));
-        northPanelForCreate.add(newLastNameTextField);
-        northPanelForCreate.add(new JLabel("Nouveau mot de passe : "));
-        northPanelForCreate.add(newPasswordField);
-        northPanelForCreate.add(createButton);
-    }*/
+
+
 
     public JTextField getNewFirstNameTextField() {
         return newFirstNameTextField;
@@ -96,6 +97,10 @@ public class Persons extends JPanel {
 
     public JButton getCreateButton() {
         return createButton;
+    }
+
+    public JButton getShowButton() {
+        return showButton;
     }
 }
 

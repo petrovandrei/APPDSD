@@ -64,9 +64,9 @@ public class MockSignal {
 
     private void displayMainMenu() {
         System.out.println("\nMenu - Choose an action :");
-        System.out.println("2: Mock sensors");
-        System.out.println("3: Indent Json");
-        choice = chooseAction(1, 3);
+        System.out.println("1: Mock sensors");
+        System.out.println("2: Indent Json");
+        choice = chooseAction(1, 2);
         if(choice == 1) {
             sensorMockMenu();
         }

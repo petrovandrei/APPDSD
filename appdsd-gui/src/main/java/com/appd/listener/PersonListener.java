@@ -76,4 +76,34 @@ public class PersonListener implements ActionListener {
 
         }
         }
-    }}
+        else if(clickedButton == personsTab.getShowButton()){
+            fields.clear();
+            values.clear();
+            personText = "";
+            String jsonRequest = JsonUtil.serializeRequest(RequestTypes.SELECT, Person.class, null, fields, values, null, RequestSender.CLIENT);
+            System.out.println(JsonUtil.indentJsonOutput(jsonRequest));
+            String response = null;
+            try {
+                response = GuiUtil.sendRequest(jsonRequest);
+            } catch (NoConnectionException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (BadVersionException ex) {
+                ex.printStackTrace();
+            }
+            persons = (List<Person>)JsonUtil.deserializeObject(response);
+            if(persons.size() > 0)
+            {
+                for(Person person : persons)
+                {
+                    personText += person.toString() + "\n";
+                }
+            }
+
+            personsTab.getTextArea().setText(personText);
+        }
+    }
+    //personsTab.revalidate();
+    //personsTab.repaint();
+}

@@ -46,7 +46,7 @@ public class SensorConfiguration extends Sensor {
     private Float positionY;
     @JsonProperty("location")
     private Location location;
-    private String sensorType;
+    private SensorType sensorType;
     private String macAddress;
     private String hardwareVersion;
     private String serialNumber;
@@ -212,6 +212,14 @@ public class SensorConfiguration extends Sensor {
 
     public void setSensorSensitivity(SensorSensitivity sensorSensitivity) {
         this.sensorSensitivity = sensorSensitivity;
+    }
+
+    public SensorType getSensorType() {
+        return sensorType;
+    }
+
+    public void setSensorType(SensorType sensorType) {
+        this.sensorType = sensorType;
     }
 
     @Override
