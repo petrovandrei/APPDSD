@@ -3,17 +3,14 @@ package mock;
 import com.appd.entity.Message;
 
 import com.appd.entity.Location;
-import com.appd.entity.Message;
-import com.appd.entity.SensorConfiguration;
+
 import com.appd.enumeration.ConnectionStates;
 import com.appd.enumeration.RequestSender;
 import com.appd.enumeration.RequestTypes;
-import com.appd.enumeration.SensorActivity;
-import com.appd.enumeration.SensorSensitivity;
+
 import com.appd.enumeration.SensorType;
-import com.sun.xml.internal.bind.v2.TODO;
-import mock.SensorSignal;
-import com.appd.util.GuiUtil;
+
+
 import com.appd.socket.ClientSocket;
 import com.appd.util.JsonUtil;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -156,9 +153,11 @@ public class MockSignal {
             if(connectionState == ConnectionStates.SUCCESS) {
                 String serializedObject = JsonUtil.serializeObject(message, message.getClass(), "");
                 String jsonRequest = JsonUtil.serializeRequest(RequestTypes.INSERT, message.getClass(), serializedObject, null, null,null, RequestSender.SENSOR);
+                System.out.println(JsonUtil.indentJsonOutput(jsonRequest));
                 clientSocket.sendRequestToServer(jsonRequest);
                 return true;
             }
+
             else {
                 log.error("An error occurred during the connection with the server. Perhaps the server is off.");
             }

@@ -1,67 +1,50 @@
+
+
 package com.appd.entity;
-
-import com.appd.enumeration.SensorType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.appd.enumeration.SensorState;
+import com.appd.enumeration.SensorType;
 
-import java.util.Objects;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public abstract class Sensor {
 
+    @JsonProperty("sensor_id")
+    protected Integer sensorId;
+    @JsonProperty("sensor_type")
+    protected SensorType sensorType;
+    @JsonProperty("mac_address")
+    protected String macAddress;
+    @JsonProperty("serial_number")
+    protected String serialNumber;
+    @JsonProperty("hardware_version")
+    protected Float hardwareVersion;
+    @JsonProperty("software_version")
+    protected Float softwareVersion;
+    @JsonIgnore
+    private SensorState state;
 
-public class Sensor {
+//	public Sensor(String sensorMark, SensorType sensorType, double sensorPrice, int sensorInterviewPrice)
+//	{
+//		super();
+//		this.sensorMark = sensorMark;
+//		this.sensorType = sensorType;
+//		this.sensorPrice = sensorPrice;
+//		this.sensorInterviewPrice = sensorInterviewPrice;
+//	}
 
-
-    @JsonProperty("id")
-    private Integer sensorId;
-    @JsonProperty("type")
-    private String type;
-    @JsonProperty("name")
-    private String name;
-    @JsonProperty("configured")
-    private Boolean configured;
-    @JsonProperty("id_location")
-    private Integer locationId;
-
-    public Sensor(Integer sensorId, SensorType sensorType, String macAddress, String serialNumber, Float hardwareVersion, Float softwareVersion) {
-    }
-
-    public Sensor(Integer sensorId, String type, String name, Boolean configured, Integer locationId) {
+    public Sensor(Integer sensorId, SensorType sensorType, String macAddress, String serialNumber, Float hardwareVersion,
+                  Float softwareVersion) {
         this.sensorId = sensorId;
-        this.type = type;
-        this.name = name;
-        this.configured = configured;
-        this.locationId = locationId;
+        this.sensorType = sensorType;
+        this.macAddress = macAddress;
+        this.serialNumber = serialNumber;
+        this.hardwareVersion = hardwareVersion;
+        this.softwareVersion = softwareVersion;
     }
 
-    public Sensor() {
-    }
-
-    @Override
-    public String toString() {
-        return "Sensor{" +
-                "sensorId=" + sensorId +
-                ", type='" + type + '\'' +
-                ", name='" + name + '\'' +
-                ", configure=" + configured +
-                ", locationId=" + locationId +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Sensor sensor = (Sensor) o;
-        return Objects.equals(sensorId, sensor.sensorId) &&
-                Objects.equals(type, sensor.type) &&
-                Objects.equals(name, sensor.name) &&
-                Objects.equals(configured, sensor.configured) &&
-                Objects.equals(locationId, sensor.locationId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(sensorId, type, name, configured, locationId);
-    }
-
+    public Sensor() {}
 
     public Integer getSensorId() {
         return sensorId;
@@ -71,35 +54,85 @@ public class Sensor {
         this.sensorId = sensorId;
     }
 
-    public String getType() {
-        return type;
+    public SensorType getSensorType() {
+        return sensorType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setSensorType(SensorType sensorType) {
+        this.sensorType = sensorType;
     }
 
-    public String getName() {
-        return name;
+    public String getMacAddress() {
+        return macAddress;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMacAddress(String macAddress) {
+        this.macAddress = macAddress;
     }
 
-    public Boolean getConfigured() {
-        return configured;
+    public String getSerialNumber() {
+        return serialNumber;
     }
 
-    public void setConfigured(Boolean configured) {
-        this.configured = configured;
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
     }
 
-    public Integer getLocationId() {
-        return locationId;
+    public Float getHardwareVersion() {
+        return hardwareVersion;
     }
 
-    public void setLocationId(Integer locationId) {
-        this.locationId = locationId;
+    public void setHardwareVersion(Float hardwareVersion) {
+        this.hardwareVersion = hardwareVersion;
     }
+
+    public Float getSoftwareVersion() {
+        return softwareVersion;
+    }
+
+
+    public void setSoftwareVersion(Float softwareVersion) {
+        this.softwareVersion = softwareVersion;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((sensorId == null) ? 0 : sensorId.hashCode());
+        result = prime * result + ((sensorType == null) ? 0 : sensorType.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Sensor other = (Sensor) obj;
+        if (sensorId == null) {
+            if (other.sensorId != null)
+                return false;
+        } else if (!sensorId.equals(other.sensorId))
+            return false;
+        if (sensorType != other.sensorType)
+            return false;
+        return true;
+    }
+
+    public void setState(SensorState state) {
+        this.state = state;
+    }
+
+    public SensorState getState() {
+        if(state == null)
+            return SensorState.DEFAULT;
+        return state;
+    }
+
+
+
 }

@@ -19,14 +19,15 @@ import java.util.*;
 public class AlertHandler {
 
     private static final Logger log = LoggerFactory.getLogger(AlertHandler.class);
-    private final List<String> fieldsForActiveSensors = Arrays.asList("ACTIVITY", "START_ACTIVITY_TIME", "END_ACTIVITY_TIME");
+    private final List<String> fieldsForActiveSensors = Arrays.asList("ACTIVITY");
     private final List<String> testsForActiveSensors = Arrays.asList("=", "<=", ">=");
-    private final int sleepTime = 1000;
+    private final int sleepTime = DateTimeConstants.MILLIS_PER_SECOND;
     private List<String> valuesForActiveSensors;
     private Map<Integer, Cache> cacheInfoBySensor;
     private List<SensorConfiguration> activeSensors;
-    private final long updateListFrequency = 60000;
-    private long sensorActivityCheckerSleepTime = 3000;
+    private final long updateListFrequency = DateTimeConstants.MILLIS_PER_MINUTE;
+    private long sensorActivityCheckerSleepTime = 10000;
+    Util util = new Util();
 
     private Thread listUpdaterThread;
     private long counter;
@@ -43,7 +44,9 @@ public class AlertHandler {
 
     public void startThreads() {
         activeSensorListUpdater();
+/*
         sensorActivityChecker();
+*/
         //codeRetriver();
     }
 
@@ -83,18 +86,22 @@ public class AlertHandler {
 
         return results;
     }
+    private void updateSensorsSearchValues() {
+        String nowTimeCasted = "cast('" + Util.getCurrentTimeUTC() + "' as time)";
+        valuesForActiveSensors = Arrays.asList(SensorActivity.ENABLED.toString());
+    }
 
     public void updateSensorsList() {
         try {
             Connection connection = DataSource.getConnection();
+            //log.info(connection.toString());
             if (connection != null) {
                 updateSensorsSearchValues();
                 activeSensors.clear();
                 activeSensors.addAll((List<SensorConfiguration>) DAOFactory.execute(connection, SensorConfiguration.class, RequestTypes.SELECT, null, fieldsForActiveSensors, valuesForActiveSensors, testsForActiveSensors));
                 log.info("Active sensors list updated");
-                //Util.displayListElements(activeSensors, "====> ");
+
                 DataSource.putConnection(connection);
-                // TODO clearCacheSensorStateBySensor();
             }
         } catch (Exception e) {
             log.error("An error occured during the update of the active sensors list : " + e.getMessage());
@@ -102,13 +109,10 @@ public class AlertHandler {
         counter = updateListFrequency;
     }
 
-    private void updateSensorsSearchValues() {
-        String nowTimeCasted = "cast('" + Util.getCurrentTimeUTC() + "' as time)";
-        valuesForActiveSensors = Arrays.asList(SensorActivity.ENABLED.toString(), nowTimeCasted, nowTimeCasted);
-    }
 
 
-    private void sensorActivityChecker() {
+
+  /*private void sensorActivityChecker() {
         Thread thread = new Thread(new Runnable() {
 
 
@@ -160,7 +164,7 @@ public class AlertHandler {
             }
         });
         thread.start();
-    }
+    }*/
 
     public synchronized Map<SensorState, List<SensorConfiguration>> getActiveSensorsByState() {
         Map<SensorState, List<SensorConfiguration>> map = new TreeMap<>();
@@ -196,7 +200,7 @@ public class AlertHandler {
             return SensorState.CAUTION;
     }
 
-    private void saveSensorConfigurationHistory(SensorConfiguration sensor, SensorAction action, String message, Timestamp messageDate, boolean isAlertEnded) {
+    /*private void saveSensorConfigurationHistory(SensorConfiguration sensor, SensorAction action, String message, Timestamp messageDate, boolean isAlertEnded) {
         int id = sensor.getSensorConfigurationId();
         try {
             Connection connection = DataSource.getConnection();
@@ -229,9 +233,9 @@ public class AlertHandler {
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-    }
+    }*/
 
-    private void clearCacheSensorStateBySensor() {
+    /*private void clearCacheSensorStateBySensor() {
         // on veut pouvoir modifier la map pendant la boucle while, d'où l'utilisation d'un iterateur
         Iterator<Map.Entry<Integer, Cache>> iterator = cacheInfoBySensor.entrySet().iterator();
         boolean isInActiveSensorList = false;
@@ -245,9 +249,9 @@ public class AlertHandler {
                     isInActiveSensorList = true;
                     break;
                 }
-            }
+            }*/
 
-            if (!isInActiveSensorList) {
+            /*if (!isInActiveSensorList) {
                 iterator.remove();
             }
         }
@@ -256,42 +260,46 @@ public class AlertHandler {
 
     public List<SensorConfiguration> getActiveSensors() {
         return activeSensors;
-    }
+    }*/
 
-    public synchronized void processMessage(Message receivedMessage) {
+    /*public synchronized void processMessage(Message receivedMessage) {
         try {
+
             int sensorId = receivedMessage.getSensorId();
+            log.info("sensor n°" + sensorId);
             SensorState sensorState = null;
             log.info("Message reveived from the sensor n°" + sensorId);
             Timestamp messageDate = receivedMessage.getCreationDate();
             float thresholdReached = receivedMessage.getThresholdReached();
+            log.info("seuil atteint : " + thresholdReached);
             SensorConfiguration sensorConfiguration = null;
+            updateSensorsList();
             // Cherche le capteur qui a envoyé un message parmis les capteurs actifs
-            for (SensorConfiguration sensor : activeSensors) {
-                if (sensor.getSensorConfigurationId() == sensorId) {
-                    sensorConfiguration = sensor;
-                    break;
+            if(activeSensors != null){
+                for (SensorConfiguration sensor : activeSensors) {
+                    if (sensor.getSensorConfigurationId() == sensorId) {
+                        sensorConfiguration = sensor;
+                        break;
+                    }
                 }
             }
-
             if (sensorConfiguration != null) {
                 SensorType type = sensorConfiguration.getSensorType();
                 String message = "";
                 warningMessagesNeeded = SensorSensitivity.getNumberOfMessages(sensorConfiguration.getSensorSensitivity());
-
                 //Checks the state of the sensor just with the data received from the message
-                sensorState = checkSensorState(sensorConfiguration, thresholdReached);
 
                 Cache info = cacheInfoBySensor.get(sensorId);
                 //If the info is in the cache
                 if (info != null) {
+                    sensorState = checkSensorState(sensorConfiguration, thresholdReached);
                     info.setThresholdReached(thresholdReached);
                     Timestamp previousMessageTime = info.getLastMessageDate();
                     // interval entre les messages respecté
                     if (previousMessageTime != null && (messageDate.getTime() - previousMessageTime.getTime()) <= sensorConfiguration.getCheckFrequency()) {
                         // Case : a warning is detected
                         if (sensorState == SensorState.WARNING) {
-                            log.info("The sensor n°" + sensorId + " send another warning message");
+                            log.info("The sensor n°" + sensorId + " sent another warning message");
                             sensorState = info.addWarning(warningMessagesNeeded, messageDate);
 
                             if (!info.isInDanger()) {
@@ -348,7 +356,133 @@ public class AlertHandler {
             log.error(e.getMessage());
             e.printStackTrace();
         }
+    }*/
+
+    public synchronized void processMessage(Message receivedMessage) {
+        try {
+            updateSensorsList();
+            log.info(receivedMessage.toString());
+            int sensorId = receivedMessage.getSensorId();
+            SensorState sensorState = null;
+            log.info("Message reveived from the sensor n°" + sensorId);
+            Timestamp messageDate = receivedMessage.getCreationDate();
+            float thresholdReached = receivedMessage.getThresholdReached();
+            SensorConfiguration sensorConfiguration = null;
+            // Searchs the sensor which has sent a message among the active sensors
+            for(SensorConfiguration sensor : activeSensors) {
+                if(sensor.getSensorConfigurationId() == sensorId) {
+                    sensorConfiguration = sensor;
+                    break;
+                }
+            }
+
+            if(sensorConfiguration != null) {
+                SensorType type = sensorConfiguration.getSensorType();
+                String message = "";
+                warningMessagesNeeded = SensorSensitivity.getNumberOfMessages(sensorConfiguration.getSensorSensitivity());
+
+                //Checks the state of the sensor just with the data received from the message
+                sensorState = checkSensorState(sensorConfiguration, thresholdReached);
+
+                Cache info = cacheInfoBySensor.get(sensorId);
+                //If the info is in the cache
+                if(info != null) {
+                    info.setThresholdReached(thresholdReached);
+                    Timestamp previousMessageTime = info.getLastMessageDate();
+                    // Case : the interval between the two message is correct
+                    if(previousMessageTime != null && (messageDate.getTime() - previousMessageTime.getTime()) <= sensorConfiguration.getCheckFrequency())
+                    {
+                        // Case : a warning is detected
+                        if(sensorState == SensorState.WARNING) {
+                            log.info("The sensor n°" + sensorId + " send another warning message");
+                            sensorState = info.addWarning(warningMessagesNeeded, messageDate);
+                            if(sensorState == SensorState.DANGER) {
+                                log.info("=======> Sensor n° " + sensorConfiguration.getSensorConfigurationId() + " est en danger");
+                                if(!info.isInDanger()) {
+
+/*
+                                    saveSensorConfigurationHistory(sensorConfiguration, null, "", info.getFirstDangerMessageDate(), false);
+*/
+                                    info.setInDanger(true);
+
+                                }
+                            }
+                        }
+                        else if(sensorState == SensorState.DEFAULT)
+                        {
+                            Integer numberOfWarning = info.getWarningCount();
+                            // Case : Previously we had a warning
+                            Timestamp dangerTime = info.getFirstDangerMessageDate();
+                            // Case : The reparator have done their jobs
+                            if(numberOfWarning >= warningMessagesNeeded) {
+                                System.err.println(" /!\\ The maintainers repaired the sensor n°" + sensorId + " /!\\" );
+/*
+                                saveSensorConfigurationHistory(sensorConfiguration, SensorType.getActionAssociatedToStopDanger(sensorConfiguration.getSensorType()), "", dangerTime, true);
+*/
+                            }
+                            else if(numberOfWarning > 0 && numberOfWarning < warningMessagesNeeded && !type.isBinary() && type != SensorType.ACCESS_CONTROL) {
+                                log.info("A fake alert is detected for the sensor n°" + sensorId);
+/*
+                                saveSensorConfigurationHistory(sensorConfiguration, SensorAction.FAKE_ALERT, "", dangerTime, true);
+*/
+                            }
+                            // Removes the warning and Removes the first danger alert date
+                            info.reset();
+                        }
+                        else {
+                            if(sensorState == SensorState.CAUTION)
+                                info.reset();
+                            info.setSensorState(sensorState);
+                        }
+                    }
+                    // Case : the last alert in the cache was too old or there was not any message in the cache
+                    else
+                    {
+                        if(sensorState == SensorState.WARNING) {
+                            // Sets the numbers of warning message sent by this sensor
+                            info.addWarning(warningMessagesNeeded);
+                        }
+                        else
+                            info.setSensorState(sensorState);
+                    }
+
+                } else {
+                    log.info(messageDate.toString());
+                    info = new Cache(messageDate, null, sensorState, thresholdReached);
+                    log.info("The sensor n°" + sensorId + " did not send any message or did it a long time ago");
+                }
+                //Sets the last warning sent by this sensor
+                info.setLastMessageDate(messageDate);
+                // Puts or updates the info in the cache
+                cacheInfoBySensor.put(sensorId, info);
+                System.out.println(cacheInfoBySensor.toString());
+                //Displays the info on the console
+                log.info("Info about location n°" + sensorConfiguration.getLocationId());
+
+                if(type.isBinary()) {
+                    String messageForBinary = type.getMessageAccordingToState(info.getSensorState());
+
+
+
+                }
+                else {
+                    String unit = sensorConfiguration.getMeasurementUnit();
+                    if(unit == null)
+                        unit = "";
+
+                }
+
+                System.out.println(message);
+            } else {
+                log.error("The sensor n°" + sensorId + " sent a message but it should not ! Maybe this sensor does not exist");
+            }
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
+
 
 
 }

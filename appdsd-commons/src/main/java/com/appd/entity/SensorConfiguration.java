@@ -46,11 +46,6 @@ public class SensorConfiguration extends Sensor {
     private Float positionY;
     @JsonProperty("location")
     private Location location;
-    private SensorType sensorType;
-    private String macAddress;
-    private String hardwareVersion;
-    private String serialNumber;
-    private String softwareVersion;
 
     public SensorConfiguration(Integer sensorConfigurationId, Integer sensorId, SensorActivity sensorActivity, SensorType sensorType, SensorSensitivity sensorSensitivity,
                                Integer locationId,
@@ -70,7 +65,7 @@ public class SensorConfiguration extends Sensor {
         this.endTime = endTime;
         this.checkFrequency = checkFrequency;
         this.measurementUnit = measurementUnit;
-        if (sensorType.isBinary()) {
+        if(sensorType.isBinary()) {
             this.minDangerThreshold = 0f;
             this.maxDangerThreshold = 1f;
         } else {
@@ -83,8 +78,7 @@ public class SensorConfiguration extends Sensor {
         this.sensorSensitivity = sensorSensitivity;
     }
 
-    public SensorConfiguration() {
-    }
+    public SensorConfiguration() { }
 
     public Integer getSensorConfigurationId() {
         return sensorConfigurationId;
@@ -205,7 +199,6 @@ public class SensorConfiguration extends Sensor {
     public void setLocation(Location location) {
         this.location = location;
     }
-
     public SensorSensitivity getSensorSensitivity() {
         return sensorSensitivity;
     }
@@ -214,18 +207,10 @@ public class SensorConfiguration extends Sensor {
         this.sensorSensitivity = sensorSensitivity;
     }
 
-    public SensorType getSensorType() {
-        return sensorType;
-    }
-
-    public void setSensorType(SensorType sensorType) {
-        this.sensorType = sensorType;
-    }
-
     @Override
     public String toString() {
         return "Sensor [id=" + sensorConfigurationId + ", sensorActivity=" + sensorActivity + ", sensorType=" + sensorType
-                + ", locationId=" + locationId + ", ipAddress=" + ipAddress + ", macAddress=" + macAddress
+                + ", sensorSensitivity=" + sensorSensitivity + ", locationId=" + locationId + ", ipAddress=" + ipAddress + ", macAddress=" + macAddress
                 + ", serialNumber=" + serialNumber + ", hardwareVersion=" + hardwareVersion + ", softwareVersion="
                 + softwareVersion + ", creationDate=" + creationDate
                 + ", lastConfigurationDate=" + lastConfigurationDate + ", beginTime=" + beginTime + ", endTime="

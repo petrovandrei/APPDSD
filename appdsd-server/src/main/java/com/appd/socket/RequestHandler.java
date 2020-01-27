@@ -8,13 +8,18 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
+import com.appd.alert.AlertHandler;
 import com.appd.connection.pool.implementation.DataSource;
 import com.appd.dao.entityDao.DAOFactory;
+import com.appd.entity.Message;
 import com.appd.entity.Person;
+import com.appd.entity.SensorConfiguration;
 import com.appd.enumeration.ConnectionStates;
 import com.appd.enumeration.RequestSender;
 import com.appd.enumeration.RequestTypes;
+import com.appd.enumeration.SensorState;
 import com.appd.util.JSONField;
 import com.appd.util.JsonUtil;
 import com.appd.util.Util;
@@ -39,18 +44,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
         //This writer will allow us to send a response to the client
         private PrintWriter writeToClient;
 
+        private AlertHandler alertHandler = new AlertHandler();
+
         private Socket socket;
         private Connection connection;
         //For the JSON
         private ObjectMapper mapper;
-        //private AlertCenter alertCenter;
+        //private AlertHandler alertHandler;
         private final int oneSecondMs = DateTimeConstants.MILLIS_PER_SECOND;
         private final String encodageType = Util.getPropertyValueFromApplicationProperties("encodage_type");
 
-        public RequestHandler(Socket socket, Connection connection) {
+        public RequestHandler(Socket socket, Connection connection, AlertHandler alertHandler) {
             this.socket = socket;
             this.connection = connection;
-            //this.alertCenter = alertCenter;
+            this.alertHandler = alertHandler;
             mapper = new ObjectMapper();
         }
 
@@ -111,6 +118,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
                         log.info("Response to the client "+ipAddress+" :\n" + responseToClient + "\n");
                         //log.info("Response to the client :\n" + JsonUtil.indentJsonOutput(responseToClient) + "\n");
                         writeToClient.println(responseToClient);
+                    }
+                    else if(requestSender == RequestSender.SENSOR) {
+                        Message message = (Message)getObjectFromJson(json);
+                        alertHandler.processMessage(message);
+                        writeToClient.println("");
+                    }
+                    else if(requestSender == RequestSender.CLIENT_FOR_SENSOR_STATE) {
+					/*SensorState state = SensorState.valueOf(JsonUtil.getJsonNodeValue(JSONField.CACHE_SENSOR_STATE, requestOfClient));
+					List<SensorConfiguration> sensorConfigurations = alertCenter.getCacheSensorsByState(state);
+					String serializedObjects = JsonUtil.serializeObject(sensorConfigurations, SensorConfiguration.class, "");
+					writeToClient.println(serializedObjects);*/
+                        Map<SensorState, List<SensorConfiguration>> map =  alertHandler.getActiveSensorsByState();
+                        String serializedObject = JsonUtil.serializeCacheSensorsMap(map);
+                        writeToClient.println(serializedObject);
                     }
                 }
 

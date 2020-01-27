@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Properties;
 
 public class Util {
@@ -40,6 +41,21 @@ public class Util {
 
     public static String getVersionSplitter() {
         return getPropertyValueFromApplicationProperties("version_split");
+    }
+
+    public static <T> void displayListElements(List<T> elements, String newLineIndicator)
+    {
+        if(elements != null && elements.size() > 0)
+        {
+            for(T element : elements)
+            {
+                System.out.println(newLineIndicator + element);
+            }
+        }
+        else
+        {
+            log.error("The list is empty !");
+        }
     }
 
 

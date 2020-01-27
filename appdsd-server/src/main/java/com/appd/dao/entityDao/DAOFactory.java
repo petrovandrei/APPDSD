@@ -4,6 +4,7 @@ import com.appd.dao.abstracts.DAO;
 import com.appd.entity.Location;
 import com.appd.entity.Person;
 import com.appd.entity.Sensor;
+import com.appd.entity.SensorConfiguration;
 import com.appd.enumeration.RequestTypes;
 import com.appd.exception.UnknownClassException;
 
@@ -26,6 +27,8 @@ public class DAOFactory {
             dao = new SensorDao(connection);
         else if(entityClass.equals(Person.class))
             dao = new PersonDAO(connection);
+        else if(entityClass.equals(SensorConfiguration.class))
+            dao = new SensorConfigurationDao(connection);
         else
             throw new UnknownClassException(entityClass);
 

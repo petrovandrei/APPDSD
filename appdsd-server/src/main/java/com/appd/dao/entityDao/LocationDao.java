@@ -95,7 +95,7 @@ public class LocationDao extends DAO<Location> {
     protected Location getSingleValueFromResultSet(ResultSet rs) {
         Location location = null;
         try {
-            location = new Location(rs.getInt("ID"), rs.getString("NAME"), rs.getInt("FLOOR"), rs.getFloat("POSITION_X"), rs.getFloat("POSITION_Y"), rs.getFloat("WIDTH"), rs.getFloat("HEIGHT"));
+            location = new Location(rs.getInt("ID_LOCATION"), rs.getString("NAME"), rs.getInt("FLOOR"), rs.getFloat("POSITION_X"), rs.getFloat("POSITION_Y"), rs.getFloat("WIDTH"), rs.getFloat("HEIGHT"));
 
         } catch (SQLException e) {
             log.error("Une erreur est survenue lors de la sélection d'une localisation en base : " + e.getMessage());

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,31 @@ public class SensorDao extends DAO<Sensor> {
         super(connection, "SENSOR");
     }
 
+
+    public static int createSensor(Sensor obj, Connection connection) {
+        /**try {
+            PreparedStatement preparedStatement = connection
+                    .prepareStatement("INSERT INTO SENSOR (TYPE, MAC_ADDRESS,SERIAL_NUMBER)"
+                            + "VALUES (?,?,?) ", Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, obj.getType());
+            preparedStatement.setString(2, obj.getMacAddress());
+            preparedStatement.setString(3, obj.getSerialNumber());
+            //preparedStatement.setFloat(4, obj.getHardwareVersion());
+            //preparedStatement.setFloat(5, obj.getSoftwareVersion());
+            preparedStatement.execute();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                int id = rs.getInt(1);
+                return id;
+            }
+        } catch (Exception e) {
+            log.error("An error occurred during the creation of a sensor : " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0; **/
+        return 0;
+    }
+
     @Override
     public Sensor create(Sensor obj) {
         return null;
@@ -38,7 +64,7 @@ public class SensorDao extends DAO<Sensor> {
                     PreparedStatement preparedStatement = connection.prepareStatement(
                             "UPDATE SENSOR SET ID_LOCATION = ?, "
                                     + " WHERE ID = ?");
-                    preparedStatement.setInt(1, sensor.getLocationId());
+                    /*preparedStatement.setInt(1, sensor.getLocationId());*/
                     preparedStatement.execute();
                 } catch (Exception e) {
                     log.error("An error occurred during the update of a sensor : " + e.getMessage());

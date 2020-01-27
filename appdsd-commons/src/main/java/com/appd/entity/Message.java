@@ -33,4 +33,12 @@ public class Message {
         return creationDate;
     }
 
+    @Override
+    public String toString() {
+        return "Message{" +
+                "sensorId=" + sensorId +
+                ", thresholdReached=" + thresholdReached +
+                ", creationDate=" + creationDate +
+                '}';
+    }
 }

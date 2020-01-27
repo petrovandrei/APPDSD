@@ -24,4 +24,15 @@ public enum SensorSensitivity {
         }
 
     }
+
+    public static SensorSensitivity getSensorSensitivity(String sensorSensitivity)
+    {
+        SensorSensitivity[] values = SensorSensitivity.values();
+        for(SensorSensitivity value : values)
+        {
+            if(value.toString().equalsIgnoreCase(sensorSensitivity))
+                return value;
+        }
+        return null;
+    }
 }

@@ -111,5 +111,17 @@ public class Cache {
         inDanger = false;
     }
 
+    @Override
+    public String toString() {
+        return "Cache{" +
+                "warningCount=" + warningCount +
+                ", lastMessageDate=" + lastMessageDate +
+                ", firstDangerMessageDate=" + firstDangerMessageDate +
+                ", sensorState=" + sensorState +
+                ", history=" + history +
+                ", inDanger=" + inDanger +
+                ", thresholdReached=" + thresholdReached +
+                '}';
+    }
 }
 

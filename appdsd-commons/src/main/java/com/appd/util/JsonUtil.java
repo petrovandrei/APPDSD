@@ -1,7 +1,9 @@
 package com.appd.util;
 
+import com.appd.entity.SensorConfiguration;
 import com.appd.enumeration.RequestSender;
 import com.appd.enumeration.RequestTypes;
+import com.appd.enumeration.SensorState;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 public class JsonUtil {
@@ -181,7 +184,6 @@ public class JsonUtil {
 
     /**
      * Indents a jsonString in order to be more readable
-     * @param mapper
      * @param jsonString
      * @return the jsonString indented
      */
@@ -229,21 +231,21 @@ public class JsonUtil {
         return !JsonUtil.getJsonNodeValue(JSONField.ERROR_MESSAGE, json).trim().equals("");
     }
 
-    /*public static String serializeCacheSensorsMap(Map<SensorState, List<SensorConfiguration>> map) {
+    public static String serializeCacheSensorsMap(Map<SensorState, List<SensorConfiguration>> map) {
         String objectToJSON = null;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode rootNode = mapper.createObjectNode();
         try {
-			*//*for(Map.Entry<SensorState, List<SensorConfiguration>> entry : map.entrySet()) {
+			for(Map.Entry<SensorState, List<SensorConfiguration>> entry : map.entrySet()) {
 				rootNode.putPOJO(entry.getKey().name(), entry.getValue());
-			}*//*
+			}
             rootNode.putPOJO(JSONField.CACHE_SENSOR_MAP.getLabel(), map);
             objectToJSON = mapper.writeValueAsString(rootNode);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
         return objectToJSON;
-    }*/
+    }
 
     /*@SuppressWarnings("rawtypes")
     public static Map<SensorState, List<SensorConfiguration>> deserializeCacheSensorsMap(String objectInJson){

@@ -1,5 +1,6 @@
 package com.appd.socket;
 
+import com.appd.alert.AlertHandler;
 import com.appd.connection.pool.implementation.DataSource;
 import com.appd.util.Util;
 import com.appd.util.UtilServer;
@@ -27,6 +28,8 @@ public class Server {
         //log.info("Lancement du server version v" + UtilServer.getApplicationVersion() + " en cours...");
 
         DataSource.startConnectionPool();
+        AlertHandler alertHandler = new AlertHandler();
+        alertHandler.startThreads();
 
 
         try {
@@ -37,7 +40,7 @@ public class Server {
 
                     Socket socket = serverSocket.accept();
                     connection = DataSource.getConnection();
-                    RequestHandler requestHandler = new RequestHandler(socket, connection);
+                    RequestHandler requestHandler = new RequestHandler(socket, connection,alertHandler);
                     Thread clientThread = new Thread(requestHandler);
                     clientThread.start();
                 }

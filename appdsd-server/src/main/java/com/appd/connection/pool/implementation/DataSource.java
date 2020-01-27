@@ -25,11 +25,6 @@ public class DataSource {
 
     public static synchronized void putConnection(Connection connection)
     {
-        try {
-            Thread.sleep(25000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         connectionPool.putConnection(connection);
     }
 
